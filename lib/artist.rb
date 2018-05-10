@@ -20,10 +20,8 @@ class Artist
     artist = Artist.new(name)
   end
 
-  def songs
-    @songs
-  end
-  
+
+
   def add_song(song)
     if !@songs.include?(song)
       @songs << song
