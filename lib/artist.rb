@@ -18,6 +18,7 @@ class Artist
 
   def self.create(name)
     artist = Artist.new(name)
+  end
 
   def songs
     @songs
@@ -35,4 +36,6 @@ class Artist
   def genres
     self.songs.collect {|s| s.genre}.uniq
   end
+
+
 end
