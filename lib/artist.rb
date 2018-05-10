@@ -18,7 +18,6 @@ class Artist
 
   def self.create(name)
     artist = Artist.new(name)
-  end
 
   def songs
     @songs
