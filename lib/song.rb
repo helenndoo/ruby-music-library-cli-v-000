@@ -1,23 +1,29 @@
 require 'pry'
-
 class Song
-  attr_accessor :name, :artist, :genre
+
+
+  attr_accessor :name
+  attr_reader :artist
   @@all = []
 
-  def initialize(name, artist=nil, genre=nil)
+  def initialize(name, artist = nil, genre = nil)
     @name = name
-    self.artist = artist if artist != nil
-    self.genre = genre if genre != nil
+    self.artist = artist if artist
+    self.genre = genre if genre
   end
 
   def artist=(artist)
     @artist = artist
-    artist.add_song(self) unless artist.songs.include?(self)
+    artist.add_song(self)
+  end
+
+  def genre
+    @genre
   end
 
   def genre=(genre)
     @genre = genre
-    genre.add_song(self) unless genre.songs.include?(self)
+    genre.songs << self unless genre.songs.include? self
   end
 
   def self.all
@@ -29,32 +35,41 @@ class Song
   end
 
   def save
-    @@all << self
+    self.class.all << self
   end
 
-  def self.create(name, artist=nil, genre=nil)
-    self.new(name, artist, genre).tap {|s| s.save}
+  def self.create(name)
+    song = self.new(name)
+    song.save
+    song
   end
 
   def self.find_by_name(name)
-    @@all.detect {|song| song.name == name}
+    all.detect{|song| song.name == name}
   end
 
   def self.find_or_create_by_name(name)
-    self.find_by_name(name) || self.create(name)
+    find_by_name(name) || create(name)
   end
 
   def self.new_from_filename(name)
-    data = name.split(" - ")
-    artist_name, song_name, genre_name = data[0], data[1], data[2].gsub(".mp3", "")
-    artist = Artist.find_or_create_by_name(artist_name)
-    genre = Genre.find_or_create_by_name(genre_name)
-    self.create(song_name, artist, genre)
+    split_filename = name.split(" - ")
+    song = self.new(split_filename[1])
+    genre_split = split_filename[2].chomp('.mp3')
+    artist = Artist.find_or_create_by_name(split_filename[0])
+    genre = Genre.find_or_create_by_name(genre_split)
+    song.artist = artist
+    song.genre = genre
+    artist.add_song(song)
+    song
+
+    #binding.pry
   end
 
-  def self.create_from_filename(data)
-    self.new_from_filename(data)
+  def self.create_from_filename(filename)
+    new_from_filename(filename).save
   end
+
 
 
 end
