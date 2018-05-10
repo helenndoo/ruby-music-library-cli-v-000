@@ -2,8 +2,6 @@ class Artist
   extend Concerns::Findable
   extend Persistable::ClassMethods
   include Persistable::InstanceMethods
-
-
   attr_accessor :name, :song, :genre
 
   @@all = []
@@ -20,13 +18,11 @@ class Artist
 
   def self.create(name)
     artist = Artist.new(name)
-
   end
 
   def songs
     @songs
   end
-
 
   def add_song(song)
     if !@songs.include?(song)
@@ -37,11 +33,7 @@ class Artist
     end
   end
 
-
   def genres
     self.songs.collect {|s| s.genre}.uniq}
-
   end
-
-
 end
